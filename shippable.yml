@@ -1,44 +1,34 @@
-#set your language below
 language: java
 
-#set language version. This is only required if you use the default Shippable image for your build
-java:
-    - 1.8
-
-#specify which services you need. This is only valid if you use the default Shippable image for your build
-services:
+jdk:
+   - oraclejdk8
+   - openjdk8
 
 env:
+  global:
 
-matrix:
+before_install:
+#  - SUDO=$(which sudo) && $SUDO pip install awsebcli
 
-build:
-  pre_ci:
-  pre_ci_boot:
-    image_name:
-      image_tag:
-      pull:
-      options:
-  ci:
-  post_ci:
-  on_success:
-  on_failure:
-  push:
-  cache:
+before_script: 
+#  - mkdir -p shippable/testresults
+#  - mkdir -p shippable/codecoverage
+#  - mysql -e 'create database if not exists test;'
+#  - mkdir -p ~/.aws
+#  - echo '[profile eb-cli]' > ~/.aws/config
+#  - echo "aws_access_key_id = $AWSAccessKeyId" >> ~/.aws/config
+#  - echo "aws_secret_access_key = $AWSSecretKey" >> ~/.aws/config
 
-integrations:
-  notifications:
-    - integrationName:
-      type:
-      recipients:
-      branches:
-      on_start:
-      on_success:
-      on_failure:
-      on_changed:
+script:
+  - gradlew clean build
+#  - mkdir -p .elasticbeanstalk
+#  - cp config.yml .elasticbeanstalk/
+#  - mvn clean cobertura:cobertura
+#  - mvn test -DRDS_PORT=3306 -DRDS_DB_NAME=test -DRDS_HOSTNAME=localhost -DRDS_PASSWORD= -DRDS_USERNAME=shippable
 
-  hub:
-    - integrationName:
-      type:
-      agent_only:
-      branches:
+after_success:
+#  - mvn compile war:exploded
+#  - cp -r target/App/* ./
+#  - git add -f META-INF WEB-INF
+#  - git commit -m "Deploy"
+#  - eb init && eb deploy
