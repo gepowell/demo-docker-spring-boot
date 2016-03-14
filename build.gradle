@@ -19,7 +19,7 @@ apply plugin: 'docker'
 // end::plugin[]
 
 // This is used as the docker image prefix (org)
-group = 'gregturn'
+group = 'gazpowell'
 
 jar {
     baseName = 'gs-spring-boot-docker'
@@ -27,17 +27,17 @@ jar {
 }
 
 // tag::task[]
-task buildDocker(type: Docker, dependsOn: build) {
-  push = true
-  applicationName = jar.baseName
-  dockerfile = file('src/main/docker/Dockerfile')
-  doFirst {
-    copy {
-      from jar
-      into stageDir
-    }
-  }
-}
+//task buildDocker(type: Docker, dependsOn: build) {
+//  push = true
+//  applicationName = jar.baseName
+//  dockerfile = file('src/main/docker/Dockerfile')
+//  doFirst {
+//    copy {
+//      from jar
+//      into stageDir
+//    }
+//  }
+//}
 // end::task[]
 
 repositories {
@@ -54,4 +54,21 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.11'
+}
+
+
+docker {
+    baseImage "azul/zulu-openjdk-centos:8"
+    maintainer 'Gareth Powell "gareth.powell@mosaicisland.co.uk"'
+}
+
+task dockerize(type: Docker, dependsOn: build) {
+    applicationName = "docker-ecs-demo"
+    tagVersion "${jar.version}"
+    push true
+    volume '/tmp'
+    addFile "$buildDir/libs/${jar.baseName}-${jar.version}.jar", '/app.jar'
+    runCommand "bash -c 'touch /app.jar'"
+    exposePort 8080
+    entryPoint(['java', '-Xmx256m', '-XX:+UseG1GC', '-jar', '/app.jar'])
 }

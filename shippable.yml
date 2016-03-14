@@ -19,7 +19,7 @@ before_script:
 #  - echo "aws_secret_access_key = $AWSSecretKey" >> ~/.aws/config
 
 script:
-  - ./gradlew clean build
+  - ./gradlew dockerize
 #  - mkdir -p .elasticbeanstalk
 #  - cp config.yml .elasticbeanstalk/
 #  - mvn clean cobertura:cobertura
