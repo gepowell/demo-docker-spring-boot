@@ -19,13 +19,14 @@ before_script:
 #  - echo "aws_secret_access_key = $AWSSecretKey" >> ~/.aws/config
 
 script:
-  - ./gradlew dockerize
+  - ./gradlew clean build
 #  - mkdir -p .elasticbeanstalk
 #  - cp config.yml .elasticbeanstalk/
 #  - mvn clean cobertura:cobertura
 #  - mvn test -DRDS_PORT=3306 -DRDS_DB_NAME=test -DRDS_HOSTNAME=localhost -DRDS_PASSWORD= -DRDS_USERNAME=shippable
 
 after_success:
+  - ./gradlew dockerize
 #  - mvn compile war:exploded
 #  - cp -r target/App/* ./
 #  - git add -f META-INF WEB-INF
